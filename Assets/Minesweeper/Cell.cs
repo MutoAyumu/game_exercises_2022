@@ -10,6 +10,8 @@ public class Cell : MonoBehaviour
     [SerializeField] OpenState _openState = OpenState.Close;
     [SerializeField] Image _image;
 
+    Minesweeper _minesweeper;
+
     public CellState CellState
     {
         get => _cellState;
@@ -27,6 +29,11 @@ public class Cell : MonoBehaviour
             _openState = value;
             OnOpenStatechanged();
         }
+    }
+
+    private void Awake()
+    {
+        _minesweeper = FindObjectOfType<Minesweeper>();
     }
 
     private void Start()
@@ -73,12 +80,42 @@ public class Cell : MonoBehaviour
         else if(_openState == OpenState.flag)
         {
             _image.color = Color.white;
+            _view.color = Color.red;
             _view.text = "F";
         }
         else
         {
             _image.color = Color.white;
             OnCellStateChanged();
+        }
+    }
+    public void OpenCells()
+    {
+        if (_openState == OpenState.Open) return;
+
+        OpenState = OpenState.Open;
+
+        if (_cellState != CellState.None) return;
+
+        if (_minesweeper.GetCell(this.gameObject) is { } data)
+        {
+            var row = data.Row;
+            var column = data.Column;
+            var cells = _minesweeper.GetCellArray();
+
+            for (int r = row - 1; r <= row + 1; r++)
+            {
+                if (r < 0 || r >= cells.GetLength(0)) continue;
+
+                for(int c = column - 1; c <= column + 1; c++)
+                {
+                    if (c < 0 || c >= cells.GetLength(1)) continue;
+
+                    var cell = cells[r, c];
+
+                    cell.OpenCells();
+                }
+            }
         }
     }
 }
