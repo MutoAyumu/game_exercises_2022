@@ -17,14 +17,12 @@ public class Minesweeper : MonoBehaviour, IPointerClickHandler
     [SerializeField] Image _gameClearPanel;
     [SerializeField] Image _gameOverPanel;
     float _timer;
-    [SerializeField] GameState _gameState = GameState.Start;
+    GameState _gameState = GameState.Start;
 
     Cell[,] _cells;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //if (_isGameSet) return;
-
         var hit = eventData.pointerCurrentRaycast.gameObject;
         var cell = hit.GetComponent<Cell>();
 

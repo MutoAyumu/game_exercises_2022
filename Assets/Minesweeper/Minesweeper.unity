@@ -1094,7 +1094,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -157.42035, y: -47.08026}
+  m_AnchoredPosition: {x: -157.42041, y: -47.080322}
   m_SizeDelta: {x: 314.8407, y: 94.16052}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1896725395
@@ -1193,13 +1193,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cellPrefab: {fileID: 8005268277363965469, guid: 6b0b0ef3b739df14a96db1ef70851bd7, type: 3}
   _grid: {fileID: 0}
-  _rows: 4
-  _columus: 4
-  _mineCount: 2
+  _rows: 10
+  _columus: 10
+  _mineCount: 20
   _timeText: {fileID: 1896725395}
   _gameClearPanel: {fileID: 585728702}
   _gameOverPanel: {fileID: 1677487479}
-  _gameState: 1
 --- !u!114 &1924589335
 MonoBehaviour:
   m_ObjectHideFlags: 0
