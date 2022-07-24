@@ -8,8 +8,8 @@ namespace LifeGame
 {
     public class LifeGame : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] int _raws = 5;
-        [SerializeField] int _columus = 5;
+        [SerializeField,Range(1,100)] int _raws = 5;
+        [SerializeField,Range(1,100)] int _columus = 5;
 
         [SerializeField] RectTransform _parent;
 
