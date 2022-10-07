@@ -8,7 +8,7 @@ namespace Othello
 {
     public class Othello : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] int _raws = 8;
+        [SerializeField] int _rows = 8;
         [SerializeField] int _coulum = 8;
 
         [SerializeField] Cell _cellPrefab;
@@ -38,11 +38,11 @@ namespace Othello
         /// </summary>
         void Setup()
         {
-            _cellData = new Cell[_raws, _coulum];
+            _cellData = new Cell[_rows, _coulum];
 
             var CellParent = new GameObject("CellParent");
 
-            for(int r = 0; r < _raws; r++)
+            for(int r = 0; r < _rows; r++)
             {
                 for(int c = 0; c < _coulum; c++)
                 {
@@ -54,11 +54,11 @@ namespace Othello
                 }
             }
 
-            _stoneData = new Stone[_raws,_coulum];
+            _stoneData = new Stone[_rows,_coulum];
 
             var StoneParent = new GameObject("StoneParent");
 
-            for (int r = 0; r < _raws; r++)
+            for (int r = 0; r < _rows; r++)
             {
                 for (int c = 0; c < _coulum; c++)
                 {
@@ -89,9 +89,9 @@ namespace Othello
         /// <returns></returns>
         (Cell cell, int r, int c)? GetCell(Cell cell)
         {
-            for(int r = 0; r < _raws; r++)
+            for(int r = 0; r < _rows; r++)
             {
-                for(int c = 0; c < _raws; c++)
+                for(int c = 0; c < _rows; c++)
                 {
                     if (cell == _cellData[r, c])
                         return (_cellData[r, c], r, c);
@@ -153,7 +153,7 @@ namespace Othello
             }
             else if(Input.GetKeyDown(KeyCode.DownArrow))
             {
-                if (_selectR + 1 >= _raws) return;
+                if (_selectR + 1 >= _rows) return;
 
                 _selectR++;
                 _currentSelectCell.OnSelected(false);
@@ -186,7 +186,7 @@ namespace Othello
 
         void SetPrediction()
         {
-            for(int r = 0; r < _raws; r++)
+            for(int r = 0; r < _rows; r++)
             {
                 for(int c = 0; c < _coulum; c++)
                 {
@@ -228,16 +228,17 @@ namespace Othello
 
             _changeStone.Clear(); 
         }
+
+        //各方向で返せる石があるか調べる
         bool GetAroundStone(int r, int c)
         {
             var stoneFlag = false;
 
             //裏返す石のタイプ
             var stoneType = _currentTurn == Turn.White ? StoneType.Black : StoneType.White;
-            //var nextStoneType = _currentTurn == Turn.White ? 
 
             //上
-            if(r - 1 >= 0)
+            if(r - 1 >= 0) //例外除去
             {
                 if(_cellData[r - 1, c].CellType == CellType.Placed && _stoneData[r - 1, c].StoneType == stoneType)
                 {
