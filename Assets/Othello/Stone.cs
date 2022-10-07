@@ -11,8 +11,8 @@ namespace Othello
     {
         [SerializeField]StoneType _stoneType;
 
-        const int _blackRotationX = 0;
-        const int _whiteRotationX = 180;
+        int _blackRotationX = 0;
+        int _whiteRotationX = 180;
 
         public StoneType StoneType
         {
@@ -36,7 +36,12 @@ namespace Othello
         {
             var x = 0;
 
-            switch(_stoneType)
+            if (!gameObject.activeSelf)
+            {
+                gameObject.SetActive(true);
+            }
+
+            switch (_stoneType)
             {
                 case StoneType.Black:
                     x = _blackRotationX;

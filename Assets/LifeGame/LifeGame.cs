@@ -8,7 +8,7 @@ namespace LifeGame
 {
     public class LifeGame : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField,Range(1,100)] int _raws = 5;
+        [SerializeField,Range(1,100)] int _rows = 5;
         [SerializeField,Range(1,100)] int _columus = 5;
 
         [SerializeField] RectTransform _parent;
@@ -27,7 +27,7 @@ namespace LifeGame
         private void Awake()
         {
             //èâä˙ê›íË
-            _cells = new Cell[_raws, _columus];
+            _cells = new Cell[_rows, _columus];
 
             if (!_parent)
             {
@@ -47,7 +47,7 @@ namespace LifeGame
         /// </summary>
         public void OnStart()
         {
-            for (int r = 0; r < _raws; r++)
+            for (int r = 0; r < _rows; r++)
             {
                 for (int c = 0; c < _columus; c++)
                 {
@@ -87,7 +87,7 @@ namespace LifeGame
         /// <returns></returns>
         (Cell cell, int raw, int columu)? GetCell(GameObject go)
         {
-            for (int r = 0; r < _raws; r++)
+            for (int r = 0; r < _rows; r++)
             {
                 for (int c = 0; c < _columus; c++)
                 {
@@ -147,9 +147,9 @@ namespace LifeGame
         }
         void Move()
         {
-            int[,] data = new int[_raws, _columus];
+            int[,] data = new int[_rows, _columus];
 
-            for (int r = 0; r < _raws; r++)
+            for (int r = 0; r < _rows; r++)
             {
                 for (int c = 0; c < _columus; c++)
                 {
@@ -159,7 +159,7 @@ namespace LifeGame
                 }
             }
 
-            for (int r = 0; r < _raws; r++)
+            for (int r = 0; r < _rows; r++)
             {
                 for (int c = 0; c < _columus; c++)
                 {
@@ -203,7 +203,7 @@ namespace LifeGame
 
             for (int r = raw - 1; r <= raw + 1; r++)
             {
-                if (r < 0 || r >= _raws)
+                if (r < 0 || r >= _rows)
                     continue;
 
                 for (int c = columu - 1; c <= columu + 1; c++)
