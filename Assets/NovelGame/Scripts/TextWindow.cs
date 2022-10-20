@@ -8,7 +8,7 @@ public class TextWindow : MonoBehaviour
     [SerializeField] TMP_Text _text;
     [SerializeField] string[] _texts;
     [SerializeField] float _drawSpeed = 0.1f;
-    [SerializeField] float _colorChangeSpeed = 0.3f;
+    [SerializeField] float _colorChangeSpeed = 1f;
     [SerializeField] bool _colorChange;
 
     int _count;
@@ -72,14 +72,14 @@ public class TextWindow : MonoBehaviour
             {
                 len = length;
 
-                if(_colorChange)
+                if (len > _texts[_count].Length)
+                    break;
+
+                _text.text = _texts[_count].Substring(0, len);
+
+                if (_colorChange)
                     StartCoroutine(ColorChange(len));
             }
-
-            if (length > _texts[_count].Length)
-                break;
-
-            _text.text = _texts[_count].Substring(0, length);
 
             if(Input.GetButtonDown("Fire1"))
             {
@@ -95,6 +95,8 @@ public class TextWindow : MonoBehaviour
     }
     IEnumerator ColorChange(int num)
     {
+        //一文字づつのフェードはうまくいっていない(途中)
+        
         float time = 0;
         int alpha = 0;
 
