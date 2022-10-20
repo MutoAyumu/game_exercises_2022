@@ -7,9 +7,12 @@ public class TextWindow : MonoBehaviour
 {
     [SerializeField] TMP_Text _text;
     [SerializeField] string[] _texts;
-    [SerializeField] float _speed = 0.1f;
+    [SerializeField] float _drawSpeed = 0.1f;
+    [SerializeField] float _colorChangeSpeed = 0.3f;
+    [SerializeField] bool _colorChange;
 
     int _count;
+    bool _isDrawText;
 
     private void Update()
     {
@@ -20,6 +23,8 @@ public class TextWindow : MonoBehaviour
     }
     void DrawText()
     {
+        if (_isDrawText) return;
+
         if (_texts.Length <= _count) return;
 
         Debug.Log("スタート");
@@ -31,30 +36,109 @@ public class TextWindow : MonoBehaviour
     /// <returns></returns>
     IEnumerator DrawTextCorutine()
     {
+        _isDrawText = true;
         float time = 0;
+        int len = 0;
 
-        while(true)
+        var color = Color.white;
+
+        if (_colorChange)
         {
+            color.a = 0;
+            _text.color = color;
+            StartCoroutine(ColorChange(len));
+        }
+        else
+        {
+            _text.color = color;
+        }
+
+        while (true)
+        {
+            yield return null;
+
             time += Time.deltaTime;
 
             //一応例外
-            if(_speed <= 0)
+            if(_drawSpeed <= 0)
             {
-                _speed = 0.01f;
+                _drawSpeed = 0.01f;
             }
 
 
-            var length = (int)(time / _speed);
+            var length = (int)(time / _drawSpeed);
+
+            if(len != length)
+            {
+                len = length;
+
+                if(_colorChange)
+                    StartCoroutine(ColorChange(len));
+            }
 
             if (length > _texts[_count].Length)
                 break;
 
             _text.text = _texts[_count].Substring(0, length);
 
-            yield return null;
+            if(Input.GetButtonDown("Fire1"))
+            {
+                break;
+            }
         }
+
+        _isDrawText = false;
+        _text.text = _texts[_count];
 
         _count++;
         Debug.Log("終了");
+    }
+    IEnumerator ColorChange(int num)
+    {
+        float time = 0;
+        int alpha = 0;
+
+        _text.ForceMeshUpdate();
+
+        while (true)
+        {
+
+            yield return null;
+
+            time += Time.deltaTime;
+
+            alpha += (int)(time / _colorChangeSpeed);
+
+            VertexColors(num, (byte)alpha);
+
+            if (alpha >= 255)
+            {
+                Debug.Log($"{num}");
+                break;
+            }
+        }
+
+        VertexColors(num, 255);
+    }
+    void VertexColors(int num, byte alpha)
+    {
+        var info = _text.textInfo;
+
+        Color32[] newVertexColors;
+        Color32 c0 = _text.color;
+
+        int materialIndex = info.characterInfo[num].materialReferenceIndex;
+        newVertexColors = info.meshInfo[materialIndex].colors32;
+
+        int vertexIndex = info.characterInfo[num].vertexIndex;
+
+        c0.a = alpha;
+
+        newVertexColors[vertexIndex + 0] = c0;
+        newVertexColors[vertexIndex + 1] = c0;
+        newVertexColors[vertexIndex + 2] = c0;
+        newVertexColors[vertexIndex + 3] = c0;
+
+        _text.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
     }
 }
