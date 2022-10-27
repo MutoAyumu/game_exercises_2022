@@ -7,9 +7,9 @@ public class TextWindow : MonoBehaviour
 {
     [SerializeField] TMP_Text _text;
     [SerializeField] string[] _texts;
-    [SerializeField] float _drawSpeed = 0.1f;
-    [SerializeField] float _colorChangeSpeed = 0.3f;
-    [SerializeField] bool _colorChange;
+    [SerializeField] float _drawSpeed = 0.5f;
+    [SerializeField] float _colorChangeSpeed = 0.5f;
+    [SerializeField] bool _colorChange = false;
 
     int _count;
     bool _isDrawText;
@@ -38,6 +38,7 @@ public class TextWindow : MonoBehaviour
     {
         _isDrawText = true;
         float time = 0;
+        var interval = _drawSpeed / _texts[_count].Length;
         int len = 0;
 
         var color = Color.white;
@@ -46,7 +47,7 @@ public class TextWindow : MonoBehaviour
         {
             color.a = 0;
             _text.color = color;
-            StartCoroutine(ColorChange(len));
+            StartCoroutine(ColorChange(len, interval));
         }
         else
         {
@@ -59,27 +60,19 @@ public class TextWindow : MonoBehaviour
 
             time += Time.deltaTime;
 
-            //一応例外
-            if(_drawSpeed <= 0)
+            if(time >= interval)
             {
-                _drawSpeed = 0.01f;
+                time = 0;
+                len++;
+
+                if (len > _texts[_count].Length)
+                    break;
+
+                _text.text = _texts[_count].Substring(0, len);
+
+                if (_colorChange)
+                    StartCoroutine(ColorChange(len, interval));
             }
-
-
-            var length = (int)(time / _drawSpeed);
-
-            if(len != length)
-            {
-                len = length;
-
-                if(_colorChange)
-                    StartCoroutine(ColorChange(len));
-            }
-
-            if (length > _texts[_count].Length)
-                break;
-
-            _text.text = _texts[_count].Substring(0, length);
 
             if(Input.GetButtonDown("Fire1"))
             {
@@ -93,27 +86,39 @@ public class TextWindow : MonoBehaviour
         _count++;
         Debug.Log("終了");
     }
-    IEnumerator ColorChange(int num)
+    IEnumerator ColorChange(int num, float t)
     {
+        //一文字づつのフェードはうまくいっていない(途中)
+        
         float time = 0;
         int alpha = 0;
+        float interval = t / 255;
 
         _text.ForceMeshUpdate();
 
         while (true)
         {
-
             yield return null;
 
             time += Time.deltaTime;
 
-            alpha += (int)(time / _colorChangeSpeed);
+            if(time >= interval)
+            {
+
+                time = 0;
+                alpha++;
+            }
 
             VertexColors(num, (byte)alpha);
 
             if (alpha >= 255)
             {
-                Debug.Log($"{num}");
+                //Debug.Log($"{num}");
+                break;
+            }
+
+            if(Input.GetButtonDown("Fire1"))
+            {
                 break;
             }
         }
