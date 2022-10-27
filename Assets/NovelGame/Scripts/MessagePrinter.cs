@@ -1,8 +1,12 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class MessagePrinter : MonoBehaviour
 {
+    //自分で追加
+    [SerializeField] ColorChanger _colorChanger;
+
     [SerializeField]
     private TMP_Text _textUi = default;
 
@@ -29,6 +33,7 @@ public class MessagePrinter : MonoBehaviour
             // TODO: ここにコードを書く
             if (_currentIndex == _message.Length - 1)
             {
+                _colorChanger?.ClearList();
                 return false;
             }
             else
@@ -54,8 +59,6 @@ public class MessagePrinter : MonoBehaviour
             _currentIndex++;
             _textUi.text += _message[_currentIndex];
         }
-
-        ColorChange();
     }
 
     /// <summary>
@@ -79,43 +82,5 @@ public class MessagePrinter : MonoBehaviour
         // TODO: ここにコードを書く
         _textUi.text = _message;
         _currentIndex = _message.Length - 1;
-    }
-
-    void ColorChange()
-    {
-        _textUi.ForceMeshUpdate();
-
-        TMP_TextInfo textInfo = _textUi.textInfo;
-
-        Color32[] newVertexColors;
-        Color32 c = _textUi.color;
-
-        for (int i = 0; i < _textUi.text.Length; i++)
-        {
-            int characterCount = textInfo.characterCount;
-
-            if (characterCount == 0)
-            {
-                return;
-            }
-
-            int materialIndex = textInfo.characterInfo[i].materialReferenceIndex;
-
-            newVertexColors = textInfo.meshInfo[materialIndex].colors32;
-
-            int vertexIndex = textInfo.characterInfo[i].vertexIndex;
-
-            for (int j = 0; j < 4; j++)
-            {
-                var alpha = newVertexColors[vertexIndex + j].a;
-                alpha++;
-                c = new Color32(c.r, c.g, c.b, alpha);
-                newVertexColors[vertexIndex + j] = c;
-            }
-
-            _textUi.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
-
-            //i = (i + 1) % characterCount;
-        }
     }
 }

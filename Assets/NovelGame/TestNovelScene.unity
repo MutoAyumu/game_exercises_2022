@@ -407,7 +407,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -660,6 +660,7 @@ GameObject:
   - component: {fileID: 955061804}
   - component: {fileID: 955061809}
   - component: {fileID: 955061808}
+  - component: {fileID: 955061810}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -763,6 +764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f0c5e95a442fd64295fe194e48b4f7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _colorChanger: {fileID: 955061810}
   _textUi: {fileID: 761217438}
   _message: 
   _speed: 1
@@ -784,6 +786,20 @@ MonoBehaviour:
   - bbbbbbbbbbbbbbb
   - ccccccccccccccc
   - ddddddddddddddd
+--- !u!114 &955061810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955061803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87238f099d6a0a340b3c42ae59150824, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _textUi: {fileID: 761217438}
+  _isChange: 1
 --- !u!1 &1185124879
 GameObject:
   m_ObjectHideFlags: 0
