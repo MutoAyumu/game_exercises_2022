@@ -74,7 +74,7 @@ public class FadeSystem : MonoBehaviour
     /// <param name="time"></param>
     public void OnFade(Image fadeOutImage, Image fadeInImage, float time)
     {
-        if(_isFade) return;
+        if (_isFade) return;
 
         _fadeOutImage = fadeOutImage;
         _fadeInImage = fadeInImage;
@@ -86,34 +86,54 @@ public class FadeSystem : MonoBehaviour
 
     IEnumerator Fade()
     {
-        float timer = 0;
-        float testTimer = 0;
-        float interval = _fadeTime / 255;
+        float interval = _fadeTime / 255f;
+        float alpha = 1f / 255f;
+        float value = 0;
 
-        Debug.Log($"Fade開始 : {interval}");
+        Debug.Log($"Fade開始");
 
         //開始前処理が登録されていたら実行
         _onBefore?.Invoke();
 
-        while(true)
+        //開始前処理が終わるまで待機したい
+        yield return new WaitUntil(() => _onBefore == null);
+
+        ImageColorFade(_fadeOutImage, 1);
+
+        if (_fadeInImage)
+            ImageColorFade(_fadeInImage, 0);
+
+        while (true)
         {
-            yield return null;
+            yield return new WaitForSeconds(interval);
 
-            timer += Time.deltaTime;
-            testTimer += Time.deltaTime; 
+            value += alpha;
 
-            if(interval <= timer)
+            //イメージの透明度を変更
+            ImageColorFade(_fadeOutImage, 1 - value);
+
+            if(_fadeInImage)
+                ImageColorFade(_fadeInImage, value);
+
+            //スキップ
+            if (Skip())
             {
-                ImageColorFade(_fadeOutImage, timer);
-                timer = 0;
+                break;
             }
 
-            if(_fadeOutImage.color.a <= 0)
+            //終了
+            if (_fadeOutImage.color.a <= 0)
             {
-                Debug.Log($"Fade終了 : {testTimer}");
                 break;
             }
         }
+
+        Debug.Log($"Fade終了");
+
+        ImageColorFade(_fadeOutImage, 0);
+
+        if (_fadeInImage)
+            ImageColorFade(_fadeInImage, 1);
 
         //終了時処理が登録されていたら実行
         _onAfter?.Invoke();
@@ -121,10 +141,9 @@ public class FadeSystem : MonoBehaviour
         _isFade = false;
     }
 
-    void ImageColorFade(Image image, float time)
+    void ImageColorFade(Image image, float alpha)
     {
         var c = image.color;
-        var alpha = c.a - time;
         c.a = alpha;
         image.color = c;
     }
@@ -132,16 +151,30 @@ public class FadeSystem : MonoBehaviour
     /// <summary>
     /// スキップ処理
     /// </summary>
-    public void Skip()
+    public bool Skip()
     {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            return true;
+        }
 
+        return false;
     }
 
-    [SerializeField] Image _testImage;
+    #region テスト
+
+    [SerializeField] Image _testImage1;
+    [SerializeField] Image _testImage2;
     [SerializeField] float _testTime = 2f;
 
-    public void Test()
+    public void SingleTest()
     {
-        OnFade(_testImage, _testTime);
+        OnFade(_testImage1, _testTime);
     }
+
+    public void CrossTest()
+    {
+        OnFade(_testImage1, _testImage2, _testTime);
+    }
+    #endregion
 }
