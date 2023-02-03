@@ -6,7 +6,10 @@ public class BackGroundSequencer : MonoBehaviour
 {
     [SerializeField] ColorTransitioner _transitioner;
 
-    [SerializeField] Color[] _colors;
+    [SerializeField] Color _color;
+    [SerializeField] Sprite[] _sprites;
+
+    bool _isFade;
     int _currentIndex = -1;
 
     private void Start()
@@ -25,12 +28,23 @@ public class BackGroundSequencer : MonoBehaviour
 
     private void MoveNext()
     {
-        if (_colors is null or { Length: 0 }) { return; }
-
-        if (_currentIndex + 1 < _colors.Length)
-        {
+        var c = _color;
+        Sprite sprite = null;
+        if(_currentIndex + 1 < _sprites.Length)
             _currentIndex++;
-            _transitioner?.Play(_colors[_currentIndex]);
+
+        if(_sprites[_currentIndex])
+        {
+            sprite = _sprites[_currentIndex];
         }
+
+        if(_isFade)
+        {
+            c.a = 0;
+            sprite = null;
+        }
+
+        _transitioner?.Play(c, sprite);
+        _isFade = !_isFade;
     }
 }

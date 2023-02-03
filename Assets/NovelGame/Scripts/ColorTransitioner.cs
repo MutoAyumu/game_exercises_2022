@@ -6,22 +6,24 @@ using UnityEngine.UI;
 public class ColorTransitioner : MonoBehaviour
 {
     //”wŒi‰æ‘œ
-    [SerializeField] Image _image;
+    [SerializeField] Image _fadeImage;
+    [SerializeField] Image _backImage;
     //‘JˆÚŒã‚ÌF
     [SerializeField] Color _toColor;
     //‘JˆÚ‚·‚éŽžŠÔ(s)
     [SerializeField] float _duration = 1;
 
     Color _fromColor;
+    Sprite _toBackSprite;
     float _elapsed = 0;
 
-    public bool IsCompleted => _image is null? false : _image.color == _toColor;
+    public bool IsCompleted => _fadeImage is null? false : _fadeImage.color != _toColor;
 
     private void Start()
     {
-        if (_image is null) return;
+        if (_fadeImage is null) return;
 
-        _fromColor = _image.color;
+        _fromColor = _fadeImage.color;
     }
     private void Update()
     {
@@ -29,11 +31,16 @@ public class ColorTransitioner : MonoBehaviour
 
         if (_elapsed < _duration)
         {
-            _image.color = Color.Lerp(_fromColor, _toColor, _elapsed / _duration);
+            _fadeImage.color = Color.Lerp(_fromColor, _toColor, _elapsed / _duration);
         }
         else
         {
-            _image.color = _toColor;
+            _fadeImage.color = _toColor;
+
+            if (_toBackSprite is null) return;
+
+            _backImage.sprite = _toBackSprite;
+            _toBackSprite = null;
         }
     }
 
@@ -41,12 +48,13 @@ public class ColorTransitioner : MonoBehaviour
     /// ƒtƒF[ƒhˆ—‚ðŠJŽn‚·‚é
     /// </summary>
     /// <param name="c"></param>
-    public void Play(Color c)
+    public void Play(Color c, Sprite nextSprite)
     {
-        if(_image is null) return;
+        if(_fadeImage is null) return;
 
-        _fromColor = _image.color;
+        _fromColor = _fadeImage.color;
         _toColor = c;
+        _toBackSprite = nextSprite;
         _elapsed = 0;
     }
 

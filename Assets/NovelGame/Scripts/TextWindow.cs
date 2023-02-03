@@ -47,7 +47,7 @@ public class TextWindow : MonoBehaviour
         {
             color.a = 0;
             _text.color = color;
-            StartCoroutine(ColorChange(len, interval));
+            //StartCoroutine(ColorChange(len, interval));
         }
         else
         {
@@ -70,8 +70,8 @@ public class TextWindow : MonoBehaviour
 
                 _text.text = _texts[_count].Substring(0, len);
 
-                if (_colorChange)
-                    StartCoroutine(ColorChange(len, interval));
+                //if (_colorChange)
+                    //StartCoroutine(ColorChange(len, interval));
             }
 
             if(Input.GetButtonDown("Fire1"))
